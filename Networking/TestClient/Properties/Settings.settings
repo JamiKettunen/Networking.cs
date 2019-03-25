@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TestClient.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LastHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1:5000</Value>
+    </Setting>
+    <Setting Name="LastNick" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Nickname</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

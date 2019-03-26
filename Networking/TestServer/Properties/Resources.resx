@@ -119,13 +119,14 @@
   </resheader>
   <data name="help" xml:space="preserve">
     <value>
-Client-side commands:
----------------------
+Commands
+-======-
 
-!help | !h  -  Show the Server help doc
-!motd       -  Show the Server's Message Of The Day doc
-!ping       -  Get the current latency in milliseconds to the server
+!help | !h  -  Show the Server's help doc
+!motd       -  Show the Server's Message of the Day doc
 !dc         -  Disconnects you from the current Server
+!clear      -  Clears the client-side messages
+!ping       -  Get the current latency in milliseconds to the server
 </value>
     <comment>The default server help doc</comment>
   </data>

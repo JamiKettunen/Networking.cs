@@ -1,6 +1,8 @@
 ﻿using System;
 using Networking;
 using System.Drawing;
+using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Forms;
 using TestClient.Properties;
 
@@ -39,7 +41,12 @@ namespace TestClient
             Settings.Default.Save();
             AddMessage("[CLIENT] Settings saved");
 
-            client?.Disconnect();
+            try
+            {
+                if (client != null && client.IsConnected)
+                    client.Disconnect();
+            }
+            catch { }
         }
 
         #endregion
@@ -111,9 +118,10 @@ namespace TestClient
                     bool clientSide = false;
                     lastMsgTime = DateTime.Now;
 
-                    if (msg == "!ping" || msg.StartsWith("!ping ")) { lastPingTime = DateTime.Now; }
-                    else if (msg == "!dc" || msg.StartsWith("!dc ")) { client.Disconnect(); rtbMessages.Text = ""; clientSide = true; }
-                    else if (msg == "!clear" || msg.StartsWith("!clear ")) { rtbMessages.Text = ""; AddMessage("[CLIENT] The client-side messages have been cleared!"); clientSide = false; }
+                    if (msg == "!dc" || msg.StartsWith("!dc ")) { client.Disconnect(); rtbMessages.Text = ""; clientSide = true; }
+                    else if (msg == "!clear" || msg.StartsWith("!clear ")) { rtbMessages.Text = ""; AddMessage("[CLIENT] The client-side messages have been cleared!"); clientSide = true; }
+
+                    else if (msg == "!ping" || msg.StartsWith("!ping ")) { lastPingTime = DateTime.Now; }
 
                     if (!clientSide) client.SendMessage(msg);
                 }
@@ -146,7 +154,7 @@ namespace TestClient
                 else if (cmd == "unknown") { AddMessage("[CLIENT] The issued command '" + args + "' is not available on the Client nor the Server!"); }
                 /*else if(cmd == "full")
                 {
-                    client.Disconnect(true);
+                    client.Disconnect();
                     MessageBox.Show("Server is full(((");
                 }*/
             }
@@ -158,12 +166,17 @@ namespace TestClient
 
         private void AddMessage(string msg, bool showTime = true)
         {
-            rtbMessages.Text = (showTime ? DateTime.Now.ToString("t") + " - " : "") + msg + (String.IsNullOrEmpty(rtbMessages.Text) ? "" : Environment.NewLine + rtbMessages.Text);
+            rtbMessages.Text = (showTime ? DateTime.Now.ToString("t", CultureInfo.CurrentCulture) + " - " : "") + msg + (String.IsNullOrEmpty(rtbMessages.Text) ? "" : Environment.NewLine + rtbMessages.Text);
         }
 
         private void ChangeStatus(string status)
         {
             this.Text = "Client - " + status;
+        }
+
+        private void RtbMessages_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start(e.LinkText);
         }
 
         private void txtNick_KeyDown(object sender, KeyEventArgs e)

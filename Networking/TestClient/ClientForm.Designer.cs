@@ -110,6 +110,7 @@
             this.rtbMessages.TabIndex = 4;
             this.rtbMessages.Text = "";
             this.rtbMessages.Visible = false;
+            this.rtbMessages.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.RtbMessages_LinkClicked);
             // 
             // lblHost
             // 

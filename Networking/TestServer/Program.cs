@@ -27,7 +27,7 @@ namespace TestServer
         private void StartServer()
         {
             if (File.Exists("help.txt")) { help = FileIO.ReadFromFile("help.txt"); }
-            else { motd = Resources.help; }
+            else { help = Resources.help; }
             if (File.Exists("motd.txt")) { motd = FileIO.ReadFromFile("motd.txt"); }
             else { motd = Resources.motd; }
 
@@ -48,11 +48,12 @@ namespace TestServer
             SetStatus("Server | Starting server @ " + host + "...");
             server.Start(port, localOnly);
 
-            Console.Read();
+            Console.Read(); // Hang here (Console application)
         }
 
         private void Server_OnListeningChanged()
         {
+            Console.WriteLine($"Server >> Server has been st{(server.IsListening ? "art" : "opp")}ed!");
             SetStatus(server.IsListening ? "Listening on port " + port : ""); // Not listening
         }
 

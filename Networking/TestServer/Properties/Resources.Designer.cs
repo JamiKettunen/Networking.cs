@@ -62,13 +62,14 @@ namespace TestServer.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///Client-side commands:
-        ///---------------------
+        ///Commands
+        ///-======-
         ///
-        ///!help | !h  -  Show the Server help doc
-        ///!motd       -  Show the Server&apos;s Message Of The Day doc
-        ///!ping       -  Get the current latency in milliseconds to the server
+        ///!help | !h  -  Show the Server&apos;s help doc
+        ///!motd       -  Show the Server&apos;s Message of the Day doc
         ///!dc         -  Disconnects you from the current Server
+        ///!clear      -  Clears the client-side messages
+        ///!ping       -  Get the current latency in milliseconds to the server
         ///.
         /// </summary>
         internal static string help {

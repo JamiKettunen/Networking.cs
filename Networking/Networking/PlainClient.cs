@@ -44,6 +44,10 @@ namespace Networking
         /// </summary>
         public Encoding Encoding = Encoding.UTF8;
         /// <summary>
+        /// Time to wait until declaring a pending connection to a Server as timed out
+        /// </summary>
+        public TimeSpan ConnectionTimeout = TimeSpan.FromSeconds(3);
+        /// <summary>
         /// Enable messages support? (enable the events & encode / decode data)
         /// </summary>
         public bool EnableMessages = true;
@@ -54,12 +58,11 @@ namespace Networking
 
         private NetworkStream _dataStream; // The data NetworkStream between the Server & the Client
         private bool _isConnected;         // Current connected status to the Server
-        private readonly Form _form;                // An optional Form object, used to make event usage seamless & integrate easily to WinForms
+        private readonly Form _form;       // An optional Form object, used to make event usage seamless & integrate easily to WinForms
 
         public PlainClient(Form clientForm = null)
         {
             _form = clientForm;
-            // TODO Clear more variables?
         }
 
         #region Events
@@ -118,8 +121,11 @@ namespace Networking
         /// </summary>
         public void Disconnect()
         {
-            Log("PlainClient >> Disconnect()");
-            this.IsConnected = false;
+            if (this.IsConnected)
+            {
+                Log("PlainClient >> Disconnect()");
+                this.IsConnected = false;
+            }
         }
 
         /// <summary>
@@ -190,10 +196,8 @@ namespace Networking
                     Log("PlainClient >> Host resolved to '" + host + "'");
                 }
 
-                // TODO Custom connection timeout?
-                this.Client = new TcpClient(host, port);
-
-                if (this.Client.Connected)
+                this.Client = new TcpClient();
+                if (this.Client.ConnectAsync(host, port).Wait(this.ConnectionTimeout) && this.Client.Connected)
                 {
                     this.IsConnected = true;
                     Log("PlainClient >> Connected to '" + host + ":" + port + "'!");
@@ -220,11 +224,7 @@ namespace Networking
             {
                 buffer = new byte[ReceiveBuffer];
                 bytes = _dataStream.Read(buffer, 0, buffer.Length);
-                if (bytes == 0) // Received 0 bytes => assume closed connection => disconnect & return approperiate values
-                {
-                    this.Disconnect();
-                    throw new WebException();
-                }
+                if (bytes == 0) throw new WebException(); // Received 0 bytes => assume closed connection => throw exception & return approperiate values
                 Log($"PlainClient >> Received {bytes} bytes of data from the server!");
                 return true;
             }
@@ -297,7 +297,7 @@ namespace Networking
         /// <param name="action">The action delegate void</param>
         private void InvokeAction(Action action)
         {
-            if (_form != null && _form.InvokeRequired) // TODO Assume invoke to me always required?
+            if (_form != null && _form.InvokeRequired)
                 _form.Invoke(new MethodInvoker(delegate { action(); }));
             else
                 action();

@@ -23,7 +23,7 @@ namespace Networking
             get => _isListening;
             private set
             {
-                if (_form != null && _form.InvokeRequired) // TODO Assume invoke to me always required?
+                if (_form != null && _form.InvokeRequired)
                 {
                     _form.Invoke(new MethodInvoker(delegate { this.IsListening = value; }));
                     return; // Stop executing the non-invoked method call
@@ -65,15 +65,14 @@ namespace Networking
         public bool EnableLogging = false;
 
         private bool _isListening = false; // Current Server listening status
-        private readonly Form _form;                // An optional Form object, used to make event usage seamless & integrate easily to WinForms
+        private readonly Form _form;       // An optional Form object, used to make event usage seamless & integrate easily to WinForms
 
         public PlainServer(Form form = null)
         {
             _form = form;
 
-            this.Clients?.Clear(); // TODO Close all possibly existing connections?
+            this.Clients?.Clear();
             this.Clients = new List<TcpClient>();
-            // TODO Clear more variables?
         }
 
         #region Events
@@ -154,7 +153,11 @@ namespace Networking
         /// </summary>
         public void Stop()
         {
-            this.IsListening = false;
+            if (this.IsListening)
+            {
+                Log("PlainServer >> Stop()");
+                this.IsListening = false;
+            }
         }
 
         /// <summary>
@@ -218,7 +221,6 @@ namespace Networking
         {
             try
             {
-                // TODO Handle the NetworkStream in a better way?
                 NetworkStream stream = receiver.GetStream();
                 stream.Write(buffer, 0, buffer.Length);
                 stream.Flush();
@@ -351,7 +353,6 @@ namespace Networking
                 while (_isListening)
                 {
                     Log($"PlainServer >> ReceiveMessagesLoop(\"{GetClientIdentity(client, true, true)}\"): waiting for some data to arrive...");
-                    // TODO Detect disconnected client periodically?
                     if (ReceiveData(dataStream, out byte[] buff, out int bytes)) // Thread blocking
                     {
                         Log($"PlainServer >> ReceiveMessagesLoop(\"{GetClientIdentity(client, true, true)}\"): received {bytes} bytes of data");
@@ -436,7 +437,7 @@ namespace Networking
         /// <param name="action">The action delegate void</param>
         private void InvokeAction(Action action)
         {
-            if (_form != null && _form.InvokeRequired) // TODO Assume invoke to me always required?
+            if (_form != null && _form.InvokeRequired)
                 _form.Invoke(new MethodInvoker(delegate { action(); }));
             else
                 action();

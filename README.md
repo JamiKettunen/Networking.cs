@@ -17,22 +17,20 @@ Currently only `PlainClient` & `PlainServer` classes are available for use and a
 
 ```C#
 ...
-using (PlainClient client = new PlainClient())
+PlainClient client = new PlainClient();
+client.OnConnected += () =>
 {
-    client.OnConnected += () =>
-    {
-        // Established connection with the server!
-    };
-    client.OnMessageReceived += (msg) =>
-    {
-        // Received a message from the server!
-    };
-    client.OnDisconnected += () =>
-    {
-        // Connection to the server has dropped!
-    };
-    client.Connect("127.0.0.1", 8080); // Connect to host @ 127.0.0.1:8080
-}
+    // Established connection with the server!
+};
+client.OnMessageReceived += (msg) =>
+{
+    // Received a message from the server!
+};
+client.OnDisconnected += () =>
+{
+    // Connection to the server has dropped!
+};
+client.Connect("127.0.0.1", 8080); // Connect to host @ 127.0.0.1:8080
 ...
 ```
 
@@ -40,30 +38,28 @@ using (PlainClient client = new PlainClient())
 
 ```C#
 ...
-using (PlainServer server = new PlainServer())
+PlainServer server = new PlainServer();
+server.OnStarted += () =>
 {
-    server.OnStarted += () =>
-    {
-        // The server has been started!
-    };
-    server.OnConnected += (client) =>
-    {
-        // A client has connected to the server!
-    };
-    server.OnMessageReceived += (client, msg, isAccepted) =>
-    {
-        // A message was received from a client!
-    };
-    server.OnDisconnected += (client) =>
-    {
-        // A client has disconnected from the server!
-    };
-    server.OnStopped += () =>
-    {
-        // The server has been stopped!
-    };
-    server.Start(8080); // Start server on port 8080
-}
+    // The server has been started!
+};
+server.OnConnected += (client) =>
+{
+    // A client has connected to the server!
+};
+server.OnMessageReceived += (client, msg, isAccepted) =>
+{
+    // A message was received from a client!
+};
+server.OnDisconnected += (client) =>
+{
+    // A client has disconnected from the server!
+};
+server.OnStopped += () =>
+{
+    // The server has been stopped!
+};
+server.Start(8080); // Start server on port 8080
 ...
 ```
 
